@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    font-family: Inter, Roboto, Oxygen, Fira Sans, Helvetica Neue, sans-serif;
+    font-size: 14px;
+}
+
+
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1140px;
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+}
+
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+.main__wrapper {
+    flex-grow: 1;
+}
+
+.top__box {
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.main__header {
+    margin-left: 15px;
+    margin-right: 75px;
+    color: rgb(20, 16, 36);
+}
+
+.top {
+    margin: 15px 0px 15px 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.tasks {
+    margin-top: 25px;
+    min-height: 550px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+
+.lesson {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    height: 200px;
+    border: 1px solid #c1c1c1;
+    border-radius: 10px;
+    background-color: #d7d0cd;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 5px 5px 6px #c1c1c1;
+}
+
+.lesson__first {
+    color: #1f3f68;
+    letter-spacing: 0.05em;
+}
+
+.heading {
+    margin-bottom: 10px;
+    margin-top: 10px;
+
+}
+
+.tasks__list {
+    margin: 10px;
+    padding: 5px;
+    list-style-type: none;
+}
+
+.list__item {
+    padding-bottom: 3px;
+}
+
+.task {
+    color: #8f93a3;
+    font-size: 18px;
+    font-weight: 100;
+}
+
+.task:hover {
+    color: #c1c1c1;
+}
+
+.lesson__first:hover {
+    background-color: #625f5f;
+}
+
+.lesson__first:hover:nth-child(1) {
+    color: #fbd3d394;
+}
+
+
+.footer {
+    width: 100%;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 150px;
+    background-color: #625f5f;
+    align-self: center;
+    color: #fbd3d3;
+}
+
+.footer__top {
+    width: 1140px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 25px;
+    justify-content: space-evenly;
+}
+
+.footer__contacts {
+    width: 100%;
+    display: flex;
+    font-display: row;
+    list-style-type: none;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contacts__email::before {
+    content: 'E. ';
+}
+
+.contacts__git {
+    display: flex;
+    align-items: center;
+}
+
+
+.git__link {
+    margin-left: 15px;
+    opacity: 0.6;
+    color: #fbd3d3;
+}
+
+.contacts__email {
+    opacity: 0.6;
+}
+
+.logo {
+    width: 158px;
+    height: 32px;
+}
+
+.footer__bot {
+    opacity: 0.6;
+}
