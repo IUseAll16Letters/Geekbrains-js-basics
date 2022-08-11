@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Необязательное задание.
+
+Необходимо реализовать функцию, которая будет принимать первым аргументом
+целое положительное число, в следующих трех аргументах функция принимает слова
+в разных склонениях.
+Функция должна возвращать одно из трех переданных в параметры слов подходящее
+под число, которое передано первым аргументом.
+
+Пример:
+console.log(declinationOfNumber(1, "яблоко", "яблока", "яблок")); // "яблоко"
+console.log(declinationOfNumber(2, "мяч", "мяча", "мячей")); // "мяча"
+console.log(declinationOfNumber(5, "стул", "стула", "стульев")); // "стульев"
+
+Функция должна работать с любым словом и любым целым положительным числом.
+Все аргументы, которые будут передаваться функции будут верны.
+-->
+  <script>
+    "use strict";
+
+    const testCases = {
+      1: ["яблоко", "яблока", "яблок"],
+      2: ["мяч", "мяча", "мячей"],
+      5: ["стул", "стула", "стульев"],
+      42: ["треугольник", "треугольника", "треугольников"],
+      666: ["гипертрофированный тестовый случай",
+        "гипертрофированных тестовых случая",
+        "гипертрофированных тестовых случаев"],
+      0: ["совесть", "совести"],
+    };
+
+    /**
+     * Не знаю на сколько ценится креатив и несоответствие ТЗ, вместо 3 агрументов тут 1 Array
+     * Returns sentence selecting a word in correct declination from wordDeclinations,
+     * based on itemsAmount provided.
+     * @param {Number} itemsAmount - amount of items user own. 
+     * @param {Array} wordDeclinations - Declinations of a one word.
+     * @returns {string} correctly composed sentece.
+     */
+
+    function makeCorrectSentece(itemsAmount, wordDeclinations) {
+      function declinationOfNumber() {
+        const count = +itemsAmount % 10;
+        switch (true) {
+          case count >= 5 || count === 0:
+            return wordDeclinations[wordDeclinations.length - 1];
+          case count < 5 && count > 1:
+            return wordDeclinations[1];
+          default:
+            return wordDeclinations[0];
+        }
+      }
+      return `У меня ${+itemsAmount ? `есть ${itemsAmount}` : "нет"} ${declinationOfNumber(itemsAmount, wordDeclinations)}`;
+    }
+
+    function main() {
+      for (const testCase in testCases) {
+        console.log(makeCorrectSentece(testCase, testCases[testCase]));
+      }
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>

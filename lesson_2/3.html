@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Необходимо попросить пользователя ввести два числа в переменные `a` и `b`.
+Необходимо вывести в консоль один результат из следующих проверок:
+1. Если оба числа в переменных `a` и `b` положительные, вывести разность
+чисел `a` и `b`, а именно, вычесть из переменной `a` значение переменной `b`.
+2. Если оба числа в переменных `a` и `b` отрицательные, вывести произведение
+чисел `a` и `b`.
+3. Если числа в переменных `a` и `b` разных знаков, вывести сумму чисел
+`a` и `b`.
+В остальных случаях программа не должна ничего выводить.
+-->
+  <script>
+    "use strict";
+
+    /**
+     * Selects an operation with numbers based on their sign and returns 
+     * result of calculation
+     * @param {number} a - number 1
+     * @param {number} b - number 2
+     * @returns {number} result of operation 
+     */
+    function operateNumbers(a, b) {
+      const aIsPositive = Number.parseInt(a) > 0;
+      const bIsPositive = Number.parseInt(b) > 0;
+      if (aIsPositive && bIsPositive) {
+        return a - b;
+      } else if (!aIsPositive && !bIsPositive) {
+        return a * b;
+      } else {
+        return a + b;
+      }
+    }
+
+    function main() {
+      const aValue = Number.parseFloat(prompt("Enter first number: "));
+      const bValue = Number.parseFloat(prompt("Enter second number: "));
+      if (!!aValue && !!bValue) {
+        console.log(operateNumbers(aValue, bValue));
+      }
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>
