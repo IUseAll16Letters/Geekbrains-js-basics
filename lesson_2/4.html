@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Необходимо реализовать четыре функции, каждая функция должна принимать по два
+числа и выполнять одну из операций (каждая функция выполняет одну из них):
+1. Сложение
+2. Разность
+3. Умножение
+4. Деление
+
+Необходимо сделать так, чтобы функция вернула число, например выражение
+`console.log(sum(2, 6));` должно вывести число 8 в консоль (sum - функция
+сложения в данном примере, ваши названия функций могут отличаться).
+
+Округлять значения, которые возвращают функции не нужно, однако, обратите
+внимание на разность, функция должна вычесть из большего числа меньшее, либо
+вернуть 0, если числа равны.
+
+Функциям всегда передаются корректные числа, проверки на NaN, Infinity делать
+не нужно.
+
+Необходимо для всех функций прописать комментарии jsdoc https://jsdoc.app/.
+-->
+  <script>
+    "use strict";
+
+    /**
+     * Summs two numbers
+     * @param {number} a - first number
+     * @param {number} b - second number
+     * @returns {number} returns result of summation 
+     */
+    function sum(a, b) {
+      return a + b;
+    }
+
+    /**
+    * Substracts one number from another, returning absolute value
+    * Abs implemented for cases when b > a, in readability purposes
+    * @param {number} a - first number
+    * @param {number} b - second number
+    * @returns {number} returns result of substraction 
+    */
+    function sub(a, b) {
+      return Math.abs(a - b);
+    }
+
+    /**
+     * Multiplies two numbers
+     * @param {number} a - first number
+     * @param {number} b - second number
+     * @returns {number} returns result of multiplication 
+     */
+    function mul(a, b) {
+      return a * b
+    }
+
+    /**
+     * Divides two numbers
+     * @param {number} a - first number
+     * @param {number} b - second number
+     * @returns {number} returns result of division 
+     */
+    function div(a, b) {
+      return a / b
+    }
+
+    function main() {
+      const testNumbers = [5, 17];
+      const operations = [sum, sub, mul, div];
+      for (const operation of operations) {
+        console.log(operation(testNumbers[0], testNumbers[1]));
+      }
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>
