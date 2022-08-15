@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+1. Необходимо вывести в консоль массив продуктов в котором есть хоть одна
+фотография используя метод filter. Исходные данные - массив products.
+2. Необходимо отсортировать массив products используя метод sort по цене,
+начиная с самой маленькой, заканчивая самой большой ценой, после чего вывести
+отсортированный массив в консоль.
+-->
+  <script>
+    "use strict";
+
+    const products = [
+      {
+        id: 3,
+        price: 127,
+        photos: [
+          "1.jpg",
+          "2.jpg",
+        ],
+      },
+      {
+        id: 5,
+        price: 499,
+        photos: [],
+      },
+      {
+        id: 10,
+        price: 26,
+        photos: [
+          "3.jpg",
+        ],
+      },
+      {
+        id: 8,
+        price: 78,
+      },
+    ];
+
+    // 1
+    const productsHasPhoto = products.filter(function (prod) {
+      return Array.isArray(prod.photos) && prod.photos.length;
+    })
+    console.log(productsHasPhoto);
+
+    // 2 
+    // heapsort, который умеет работать по параметру. Практика синтаксиса
+    // Можно не читать, будет больно глазам. Решение по ДЗ ТЗ в конце
+
+    /**
+     * Heap/pyramid sort. input - Array of items
+     * By default sorts using items value опционально принимает
+     * Can take optional sorting param if array is array of objects, calls by [].
+     * @param {Array} arr - array of items passed for sorting;
+     * @param {string} parameter - parameter, that should be used for 
+     * sorting; default - null.
+     */
+
+    function heapsort(inputArray, parameter = null) {
+      // shallow copy of the source Array 
+      const arr = [...inputArray];
+      let heapsize = arr.length - 1;
+
+      // heapifying Array
+      for (let i = Math.floor(arr.length / 2) - 1; i > -1; i--) {
+        siftDown(arr, i, heapsize, parameter);
+      }
+
+      // heapsorting Array
+      for (let z = arr.length - 1; z > 0; z--) {
+        const spare = arr[z];
+        arr[z] = arr[0];
+        arr[0] = spare;
+        heapsize--;
+        siftDown(arr, 0, heapsize, parameter);
+      }
+
+      return arr;
+    }
+
+    /**
+     * Siftdown to restore the heap main property
+     * @param {Array}  arr - array to process
+     * @param {Number} idx - sift item index
+     * @param {Number} heapsize - heapsize
+     * @param {string} par - optional sorting parameter
+     * @returns {Array} sor of heapsorted array
+     */
+    function siftDown(arr, idx, heapsize, par) {
+      let currentMax = idx;
+      let left = idx * 2 + 1;
+      let right = idx * 2 + 2;
+      let conditionL = false;
+      let conditionR = false;
+
+      // left child bigger than parent
+      if (par) {
+        conditionL = left <= heapsize && arr[left][par] > arr[currentMax][par];
+      } else {
+        conditionL = left <= heapsize && arr[left] > arr[currentMax];
+      }
+
+      currentMax = conditionL ? left : currentMax;
+
+      // right child bigger than parent or left child
+      if (par) {
+        conditionR = right <= heapsize && arr[right][par] > arr[currentMax][par];
+      } else {
+        conditionR = right <= heapsize && arr[right] > arr[currentMax];
+      }
+
+      currentMax = conditionR ? right : currentMax;
+
+      // replace if max has changed with new biggest; then siftdown
+      if (currentMax !== idx) {
+        const spare = arr[idx];
+        arr[idx] = arr[currentMax];
+        arr[currentMax] = spare;
+
+        siftDown(arr, currentMax, heapsize, par);
+      }
+    }
+
+    // check if arrays are equal
+    function arraysAreEqual(arr1, arr2) {
+      if (arr1.length !== arr2.length) {
+        return false;
+      }
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] != arr2[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function main() {
+      // testing if array of numbers after heapsort is correct
+      const testArray = [18, 1, 6, 34, 9, 25, 44, 17, 27];
+
+      const heapsortedArray = heapsort(testArray);
+      testArray.sort(function (a, b) {
+        return a - b;
+      })
+      console.log(arraysAreEqual(testArray, heapsortedArray));
+
+      // testing if array of objects after heapsort is correct
+      const productsByPrice = heapsort(products, 'price');
+      const productsById = heapsort(products, 'id');
+      const productsByPhotos = heapsort(products, 'photos');
+
+      console.log(productsByPrice);
+      console.log(productsById);
+
+      // 2. Решение ДЗ по ТЗ
+      products.sort(function (a, b) {
+        if (a.price > b.price) {
+          return 1;
+        }
+        if (a.price < b.price) {
+          return -1;
+        }
+        return 0;
+      })
+
+      console.log(products);
+      console.log(arraysAreEqual(products, productsByPrice));
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>
