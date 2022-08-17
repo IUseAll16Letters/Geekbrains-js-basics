@@ -29,7 +29,9 @@ console.log(declinationOfNumber(5, "стул", "стула", "стульев"));
 
     const testCases = {
       1: ["яблоко", "яблока", "яблок"],
+      11: ["яблоко", "яблока", "яблок"],
       2: ["мяч", "мяча", "мячей"],
+      111: ["мяч", "мяча", "мячей"],
       5: ["стул", "стула", "стульев"],
       42: ["треугольник", "треугольника", "треугольников"],
       666: ["гипертрофированный тестовый случай",
@@ -50,8 +52,9 @@ console.log(declinationOfNumber(5, "стул", "стула", "стульев"));
     function makeCorrectSentece(itemsAmount, wordDeclinations) {
       function declinationOfNumber() {
         const count = +itemsAmount % 10;
+        const dozens = +itemsAmount % 10 % 10;
         switch (true) {
-          case count >= 5 || count === 0:
+          case count >= 5 || count === 0 || dozens == 1:
             return wordDeclinations[wordDeclinations.length - 1];
           case count < 5 && count > 1:
             return wordDeclinations[1];

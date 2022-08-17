@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Необходимо из объекта, который лежит в константе post вывести значения, к
+которым приписан комментарий, в консоль.
+-->
+  <script>
+    "use strict";
+
+    const post = {
+      author: "John", // A вывести этот текст
+      postId: 23,
+      comments: [
+        {
+          userId: 10,
+          userName: "Alex",
+          text: "lorem ipsum",
+          rating: {
+            likes: 10,
+            dislikes: 2, // B вывести это число
+          },
+        },
+        {
+          userId: 5, // C вывести это число
+          userName: "Jane",
+          text: "lorem ipsum 2", // D вывести этот текст
+          rating: {
+            likes: 3,
+            dislikes: 1,
+          },
+        },
+      ],
+    };
+
+    // 1 по ТЗ
+    console.log(post.author); // A
+    console.log(post.comments[0].rating.dislikes); // B
+    console.log(post.comments[1].userId); // C
+    console.log(post.comments[1].text); // D
+    console.log('------');
+
+    // iq55 полный рекусивный обход матрёшки
+    depthFirstSearch(post);
+
+    function depthFirstSearch(source, obj = null, route = 'root') {
+      for (let key in source) {
+        if (typeof source[key] === "object") {
+          depthFirstSearch(source[key], key, route + ` -> ${key}`);
+        } else {
+          console.log(`${route} -> ${key}: ${source[key]}`);
+        }
+      }
+    }
+  </script>
+  <script type="module" src="../modules/parse.js">
+    // 2 Если известен путь до скрипта, парсим файл как строку
+    // Тут вопрос. Хром говорит, что я отправляю Cross origin request и он заблокирован
+    // политикой безопасности. Это происходит из-за того, что скрипт пускается локально?
+    // при запуске через докер такой беды нет.
+    // require в JS - это импорт библиотек?
+
+    parseFileInConsole('./lesson_3/2.html');
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Необходимо с помощью цикла for вывести следующие 11 строк в консоль:
+0 – это ноль
+1 – нечетное число
+2 – четное число
+3 – нечетное число
+…
+10 – четное число
+-->
+  <script>
+    "use strict";
+
+    const outcomes = [
+      "четное число",
+      "нечетное число"
+    ];
+
+    OddOrEven(11);
+
+    /**
+     * Можно было решить через switch/case | if/elif/else, но из-за нуля придется
+     * каждое число проверять на n === 0, 
+     * сложность всё равно O(n), но на душе грустно.
+     * @param {Number} n - N first numbers to check if number odd or even  
+     */
+    function OddOrEven(n) {
+      console.log("0 - Это ноль");
+      for (let i = 1; i < n; i++) {
+        console.log(`${i} - ${outcomes[i % 2]}`);
+      }
+    }
+
+  </script>
+</body>
+
+</html>
