@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Необходимо данное задание выполнить в es5 стиле и в es6 стиле.
+Необходимо создать функцию-конструктор/класс для поста в социальной сети.
+Названия: `PostES5` для es5 стиля и `PostES6` для es6 стиля.
+Пост должен хранить:
+1. Автора поста (имени достаточно).
+2. Текст поста.
+3. Дату и время последнего изменения поста.
+Данные автора поста и текст поста необходимо передавать при создании
+экземпляра объекта.
+Каждому экземпляру объекта должен быть доступен метод `edit`, который будет
+менять текст поста.
+
+---
+
+Необходимо создать функцию-конструктор/класс для закрепленного поста в
+социальной сети.
+Названия: `AttachedPostES5` для es5 стиля и `AttachedPostES6` для es6 стиля.
+Закрепленный пост должен наследоваться от обычного поста.
+Данные автора поста и текст поста необходимо передавать при создании
+экземпляра объекта.
+Закрепленный пост должен иметь свойство `highlighted`, в котором по умолчанию
+будет лежать значение false (это свойство будет обозначать, будет ли наш
+закрепленный пост подсвечен).
+У экземпляров объекта закрепленного поста должен быть метод с названием
+`makeTextHighlighted`, который сделает так, чтобы наш пост стал подсвеченным
+(будет менять свойство `highlighted`).
+
+---
+
+Подсказки:
+1. Задание сложное, советую делать по аналогии с примером на онлайн-занятии.
+2. Обратите внимание что пост хранит "дату и время последнего изменения
+поста", это значит что если пост кто-то изменит (например вызовет какой-то
+метод, который изменит что-то в посте), дата и время последнего изменения
+поста также должна измениться.
+3. Выполняйте все по порядку, не стоит пытаться сделать все сразу, иначе можно
+что-нибудь пропустить.
+4. Если непонятно условие - задайте вопрос.
+-->
+  <script>
+    'use strict';
+
+    // ES5 класс для поста, без валидатора ввода
+    /**
+     * @param {string} authorName - post author
+     * @param {string} content - post content
+     * @param {Date} lastUpdate - date updated
+     */
+    function PostES5(
+      authorName,
+      content,
+      lastUpdate = Date()) {
+      this.authorName = authorName;
+      this.content = content;
+      this.lastUpdate = lastUpdate;
+    }
+
+    // Меняет содержимое и дату последнего апдейта
+    PostES5.prototype.edit = function (newContent) {
+      this.content = newContent;
+      this.lastUpdate = Date();
+    }
+
+    // ES5 класс для поста с возможностью закрепить
+    /**
+     * @param {string} authorName - post author
+     * @param {string} content - post content
+     * @param {Date} lastUpdate - date updated
+     * @param {Boolean} isHighlighted - if the post is attached default = false
+     */
+    function AttachedPostES5(
+      authorName,
+      content,
+      lastUpdate = Date(),
+      isHighlighted = false) {
+      PostES5.call(this, authorName, content, lastUpdate);
+      this.__isHighlighted = isHighlighted;
+    }
+
+    // ES5 наследование методов + новый метод для закрепления поста
+    AttachedPostES5.prototype = Object.create(PostES5.prototype);
+    AttachedPostES5.prototype.constructor = PostES5;
+    AttachedPostES5.prototype.makeTextHighlighted = function () {
+      this.__isHighlighted = true;
+      console.log(`post by ${this.authorName}, was attached`);
+    }
+
+    // ES6
+    /**
+     * @params - Параметры идентичны классу из ES5
+     * НО! прописан валидатор, если какое-то поле формы будет пустое
+     * выставляет значения err, и включает обработчик формы... наверное
+     */
+    class PostES6 {
+      constructor(postAuthorName, postContent, postLastUpdate = Date()) {
+        try {
+          if (postAuthorName === undefined || postContent === undefined) {
+            this._postAuthorName = 'err';
+            this._postContent = 'err';
+            throw Error("Post content or post author are empty. set err");
+          }
+
+          this.__postAuthorName = postAuthorName;
+          this._postContent = postContent;
+          this._postLastUpdate = postLastUpdate;
+        } catch (e) {
+          console.log(e);
+          // И тут появляется код, который чистит форму и всё исправляет!
+        }
+      }
+
+      // Попытка реализовать интерфейс класса
+      updatePost(time = Date()) {
+        this._postLastUpdate = time;
+      }
+
+      get postContent() {
+        return this._postContent;
+      }
+
+      get postAuthorName() {
+        return this.__postAuthorName;
+      }
+
+      get postLastUpdate() {
+        return this._postLastUpdate;
+      }
+
+      set postContent(newContent) {
+        this._postContent = newContent;
+        this.updatePost();
+      }
+
+      edit(newPostContent) {
+        this.postContent = newPostContent;
+      }
+    }
+
+    // Класс с возможностью прикрепить и открепить посты
+    class AttachedPostES6 extends PostES6 {
+      constructor(postAuthorName, postContent, postLastUpdate, isHighlighted = false) {
+        super(postAuthorName, postContent, postLastUpdate);
+        this.__isHighlighted = isHighlighted;
+      }
+
+      makeTextHighlighted() {
+        this.__isHighlighted = true;
+      }
+
+      unmakeTextHighlighted() {
+        this.__isHighlighted = false;
+      }
+    }
+
+
+    function testES5() {
+      // создаем пост, для упрощения сразу с возможностью закрепить
+      let newPostVk = new AttachedPostES5(
+        'Foma Ivanich',
+        'Ochen korotkiy i leniviy post, pro to kak PRAVILNO marinovat ogurtsi',
+      )
+      console.log(newPostVk);
+      console.log('');
+
+      //
+      newPostVk.makeTextHighlighted();
+      console.log(newPostVk);
+    }
+
+    function testES6() {
+      // Проверка, что объект создается корректно при всех аргументах
+      let vkPost = new PostES6(
+        'Gerasim',
+        'Eshe odin suroviy post ot Gerasima, kotoriy kak britva vonzaetsya v' +
+        'prostranstvo i vremya, peresekaya goroda i okeani v odno mgnovenie!');
+      console.log(vkPost);
+      console.log('');
+
+      // У объекта меняется текст поста
+      vkPost.edit('Vse tot je suroviy post ot Gerasima, no uje redaktirovanniy');
+      console.log(vkPost);
+      console.log('');
+
+      // Выдает ошибку, если нет какого-либо из аргументов
+      let fbPost = new PostES6('gerasim');
+      console.log(fbPost);
+      console.log('');
+
+      // Создается новый объект, с аргуменатми старого и аттрибутом закреплен
+      let vkHighlighted = new AttachedPostES6(
+        vkPost.postAuthorName,
+        vkPost.postContent,
+        vkPost.postLastUpdate);
+
+
+      console.log(vkHighlighted);
+      // Проверка, что пост закрепляется
+      vkHighlighted.makeTextHighlighted();
+      console.log(vkHighlighted);
+      // Проверка, что пост открепляется
+      vkHighlighted.unmakeTextHighlighted();
+      console.log(vkHighlighted);
+      // Проверка, что объект родительского класса не изменяется при изменении 
+      console.log(vkPost);
+    }
+
+
+    function main() {
+      testES5();
+      console.log('');
+      testES6();
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>

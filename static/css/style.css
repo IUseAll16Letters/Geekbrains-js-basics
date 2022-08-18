@@ -77,7 +77,8 @@ h5 {
 }
 
 .lesson__first,
-.lesson__second {
+.lesson__second,
+.lesson__third {
     color: #1f3f68;
     letter-spacing: 0.05em;
 }
@@ -109,15 +110,16 @@ h5 {
 }
 
 .lesson__first:hover,
-.lesson__second:hover {
+.lesson__second:hover,
+.lesson__third:hover {
     background-color: #625f5f;
 }
 
 .lesson__first:hover:nth-child(1),
-.lesson__second:hover:nth-child(1) {
+.lesson__second:hover:nth-child(2),
+.lesson__third:hover:nth-child(3) {
     color: #fbd3d394;
 }
-
 
 .footer {
     width: 100%;

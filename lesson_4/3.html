@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Необязательное задание.
+
+Необходимо создать функцию getDigitsOfNumber, которая принимает целое
+положительное число в диапазоне от 0 до 1000.
+Функция должна вернуть обычный объект с тремя свойствами:
+1. units - содержит число, количество единиц в параметре функции.
+2. dozens - содержит число, количество десятков в параметре функции.
+3. hundreds - содержит число, количество сотен в параметре функции.
+Если функции было передано не целое положительное число, либо число в ином
+диапазоне, нежели задано в условии, функция должна вывести в консоль информацию
+об ошибке и вернуть пустой объект.
+Необходимо также прописать jsdoc для данной функции.
+
+Подсказка:
+У объекта console есть разные методы, мы часто используем console.log для того
+чтобы вывести в консоль какое-то значение, однако есть и другие методы, найдите
+в интернете какие методы существуют и используйте "правильный метод" в нужном
+месте. Обратите внимание что функция не должна выбрасывать ошибку, она должна
+только вывести в консоль информацию о том, что что-то пошло не так.
+Обратите внимание на слова "от 0 до 1000", это означает диапазон [0, 999], что
+можно прочитать как "от нуля до 999 включительно".
+-->
+  <script>
+    "use strict";
+
+
+    /**
+     * Функция разбивает число по разрядам.
+     * @param {number} number - expected integer value
+     * Возвращает объект с тремя свойствами hunders, dozens, units
+     * Если передано не целое число - выбрасывает в консоль ошибку.
+     */
+
+    function getDigitsOfNumber(number) {
+      if (!Number.isInteger(number) || 0 > number || number > 1000) {
+        console.error(`expected 0 < int < 1000, got ${number} instead`);
+        return {};
+      }
+      return {
+        hundreds: Math.floor(number / 100),
+        dozens: Math.floor(number / 10) % 10,
+        units: number % 10,
+      };
+    }
+
+
+    // OOP solution
+    class DigitsOfNumber {
+      constructor(number) {
+        if (!Number.isInteger(number) || 0 > number || number > 1000) {
+          console.error(`expected 0 < int < 1000, got ${number} instead`);
+          return {};
+        }
+        this.hundreds = Math.floor(number / 100);
+        this.dozens = Math.floor(number / 10) % 10;
+        this.units = number % 10;
+      }
+    }
+
+    function test() {
+      const testCases = [-1, 1, 12, 105, 777, 1001, 'a', undefined, null];
+      for (const testCase of testCases) {
+        let var1 = new DigitsOfNumber(testCase);
+        console.log(var1);
+        console.log(getDigitsOfNumber(testCase));
+      }
+    }
+
+    test();
+
+  </script>
+</body>
+
+</html>

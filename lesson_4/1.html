@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Необходимо данное задание выполнить в es5 стиле и в es6 стиле.
+Необходимо создать функцию-конструктор/класс для продукта.
+Названия: `ProductES5` для es5 стиля, `ProductES6` для es6 стиля.
+При создании объекта от функции-конструктора/класса необходимо передавать имя
+и цену товара, эта информация должна быть сохранена в объекте.
+Также у объекта должна быть возможность выполнить метод `make25Discount`, данный
+метод должен уменьшать стоимость продукта на 25%.
+Необходимо продемонстрировать работу с объектом (в свободной форме).
+-->
+  <script>
+    "use strict";
+
+    // ES5
+    // Simple data (type and value) validation function
+    function dataValidation(object, expectedType) {
+      switch (true) {
+        case expectedType === 'number':
+          return typeof object === expectedType && !Number.isNaN(object);
+        case expectedType === 'string':
+          return typeof object === expectedType && object !== '';
+      }
+    }
+
+    // Базовый класс абстрактного объекта
+    /**
+     * @param {string} prodName - имя продукта
+     * @param {number} prodPrice - Цена, наверное, int/float лучше (double?)
+     * Если переданы неверные данные - создается объект name: err, price: 0,
+     * форма сбрасывается, а объект, наверное, удаляется. как-то
+     */
+    function BasicProduct(prodName, prodPrice) {
+      try {
+        if (!dataValidation(prodName, 'string') || !dataValidation(prodPrice, 'number')
+        ) {
+          throw new Error(
+            `prodName (type: ${typeof prodName} / string, value: ${prodName}})
+             prodPrice (type: ${typeof prodPrice} / number, value: ${prodPrice})`
+          );
+          // тут мы типо сбрасываем кривые поля формы... наверное
+        }
+        this.prodName = prodName;
+        this.prodPrice = prodPrice;
+      } catch (e) {
+        console.error(`An error occured during obejct creation`);
+        console.log(e);
+        this.prodName = 'err';
+        this.prodPrice = 0;
+      }
+    }
+
+    BasicProduct.prototype.make25Discount = function () {
+      this.prodPrice *= 0.75;
+    }
+
+    // obj representation 
+    BasicProduct.prototype.describe = function () {
+      console.log(`${this.constructor.name} class item with attrs {`);
+      for (const attr in this) {
+        if (typeof this[attr] !== 'function') {
+          console.log(`\t${attr}: ${this[attr]}`);
+        }
+      }
+      console.log('}')
+    }
+
+    // Класс наследующий базовый продукт, добавляет счетчик объектов и SKU
+    /**
+     * @param {string} SKU - Stock keeping unit строкой default - 0x0 
+     * @param {number} amountStock - объектов в наличии
+     */
+    function ProductES5(prodName, prodPrice, SKU = '0x0', amountStock = 0) {
+      BasicProduct.call(this, prodName, prodPrice);
+      this.SKU = SKU;
+      this.amountStock = amountStock;
+    }
+
+    ProductES5.prototype = Object.create(BasicProduct.prototype);
+    ProductES5.prototype.constructor = ProductES5;
+    ProductES5.prototype.showTotalCost = function () {
+      return `total cost of ${this.prodName}(s): ${this.amountStock * this.prodPrice}`;
+    };
+
+
+    // ES6 Мета продукт с ф-цией дискаунта
+    class MetaProduct {
+      constructor(prodName, prodPrice) {
+        this.prodName = prodName;
+        this.prodPrice = prodPrice;
+      }
+
+      make25Discount() {
+        this.prodPrice *= 0.75;
+      }
+    }
+
+    // Король продуктов, готовый к употреблению в ЦРМ-ке
+    class ProductES6 extends MetaProduct {
+      constructor(
+        prodName,
+        prodPrice,
+        SKU = '0x0',
+        amountStock = 0,
+        description = 'No description') {
+        super(prodName, prodPrice);
+        this.SKU = SKU;
+        this._amountStock = amountStock;
+        this.description = description;
+      }
+
+      // getter
+      get amountStock() {
+        return this._amountStock;
+      }
+
+      // setter
+      set amountStock(value) {
+        if (value < 0) {
+          throw "Invalid value";
+        }
+        console.log(`Chaging the ${this, this.prodName} amount to ${value}`)
+        this._amountStock = value;
+      }
+
+      make25Discount() {
+        super.make25Discount();
+        console.log(`Discounting ${this.prodName}, new price ${this.prodPrice}`);
+      }
+    }
+
+
+    function main() {
+      // ES5 
+      // init
+      let book = new BasicProduct('Javascript for Dummies', 750);
+      console.log(book);
+      // Проверка работоспособности дискаунта
+      book.make25Discount();
+      console.log(book);
+      console.log('');
+
+      // init объекта потомка, проверка дискаунта
+      let towel = new ProductES5('White towel', 1000, '0x0271ab2', 5);
+      console.log(towel);
+      towel.make25Discount();
+      console.log(towel);
+      console.log('');
+
+      book.describe();
+      console.log('');
+      towel.describe();
+
+      // Родитель не должен получать отображение суммарной цены всех объектов
+      console.log(towel.showTotalCost());
+      try {
+        console.log(book.showTotalCost());
+      } catch (e) {
+        console.log('');
+        console.log(e);
+        console.log('');
+      }
+
+
+      // ES6 part
+      let wand = new ProductES6('Magic wand', 500);
+      console.log(wand);
+
+      wand.make25Discount()
+      console.log(wand.amountStock);
+      wand.amountStock = 5;
+      console.log(wand.amountStock);
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>
