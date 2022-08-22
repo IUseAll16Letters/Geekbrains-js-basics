@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Инлайн, да простят меня боги JS'a -->
+    <style>
+        * {
+            margin: 0 auto;
+            padding: 0 auto;
+            font-family: 'SF Pro Text';
+        }
+
+        ul {
+            list-style-type: none;
+            display: flex;
+            margin-bottom: 1px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1px;
+            padding: 1px;
+            width: 30px;
+            height: 30px;
+        }
+
+        .black:hover,
+        .white:hover {
+            background-color: rgb(68, 179, 230);
+        }
+
+        .black {
+            background-color: rgb(182 136 96);
+        }
+
+        .white {
+            background-color: rgb(240, 201, 167);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+    </div>
+
+    <script>
+        class Deck {
+            constructor() {
+                this.isCreated = false;
+            }
+
+            // Creating single line of chess/checkers deck build on ul
+            createdDeckLine(row) {
+                const deckLine = document.createElement('ul');
+
+                for (let col = 0; col < 9; col++) {
+                    const newLi = document.createElement('li');
+                    newLi.dataset.x = `${col}`;
+                    newLi.dataset.y = `${row}`;
+                    if (col == 0) {
+                        newLi.textContent = row;
+                        newLi.class = '';
+                    } else {
+                        if ((col % 2 - row % 2) == 0) {
+                            newLi.classList.add('white');
+                        } else {
+                            newLi.classList.add('black');
+                        }
+                    }
+                    deckLine.append(newLi);
+                }
+                return deckLine;
+            }
+
+            // Building a deck using create line
+            createDeck() {
+                const deckBoard = document.createElement('div');
+                deckBoard.classList.add('deck__board');
+
+                // letter line
+                const letterLi = document.createElement('ul');
+                letterLi.insertAdjacentHTML('beforeEnd',
+                    '<li></li>')
+                for (let letterIdx = 65; letterIdx < 73; letterIdx++) {
+                    const newLi = document.createElement('li');
+                    newLi.textContent = String.fromCharCode(letterIdx);
+                    letterLi.append(newLi);
+                }
+                deckBoard.append(letterLi);
+
+                // building deck cycle
+                for (let rw = 1; rw < 9; rw++) {
+                    deckBoard.append(
+                        this.createdDeckLine(rw));
+                }
+
+                document.querySelector('.app').append(deckBoard);
+                this.isCreated = true;
+            }
+        }
+
+        function main() {
+            const chessDeck = new Deck();
+            chessDeck.createDeck();
+        }
+
+        main();
+
+    </script>
+
+</body>
+
+</html>
