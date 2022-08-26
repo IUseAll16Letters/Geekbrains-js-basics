@@ -78,7 +78,10 @@ h5 {
 
 .lesson__first,
 .lesson__second,
-.lesson__third {
+.lesson__third,
+.lesson__fourth,
+.lesson__fifth,
+.lesson_sixth {
     color: #1f3f68;
     letter-spacing: 0.05em;
 }
@@ -113,7 +116,8 @@ h5 {
 .lesson__second:hover,
 .lesson__third:hover,
 .lesson__fourth:hover,
-.lesson__fifth:hover {
+.lesson__fifth:hover,
+.lesson_sixth:hover {
     background-color: #625f5f;
 }
 
@@ -121,7 +125,8 @@ h5 {
 .lesson__second:hover:nth-child(2),
 .lesson__third:hover:nth-child(3),
 .lesson__fourth:hover:nth-child(4),
-.lesson__fifth:hover:nth-child(5) {
+.lesson__fifth:hover:nth-child(5),
+.lesson_sixth:hover:nth-child(6) {
     color: #fbd3d394;
 }
 
