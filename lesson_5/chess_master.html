@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Инлайн, да простят меня боги JS'a -->
+    <style>
+        * {
+            margin: 0 auto;
+            padding: 0 auto;
+            font-family: 'SF Pro Text';
+        }
+
+        ul {
+            list-style-type: none;
+            display: flex;
+            margin-bottom: 1px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1px;
+            padding: 1px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .black:hover,
+        .white:hover {
+            background-color: rgb(68, 179, 230);
+        }
+
+        .black {
+            background-color: rgb(182 136 96);
+        }
+
+        .white {
+            background-color: rgb(240, 201, 167);
+        }
+
+        .green {
+            background-color: rgb(94, 230, 94);
+        }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .deck__turn {
+            width: 400px;
+            padding: 25px 0px;
+            justify-self: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+    </div>
+
+    <script>
+
+        // датакалсс 
+        class ChessImageStorage {
+            constructor(pictures = null) {
+                if (pictures === null) {
+                    this.pictures = {
+                        'white': {
+                            'pawn': 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg',
+                            'knight': 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg',
+                            'bishop': 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg',
+                            'rook': 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg',
+                            'queen': 'https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg',
+                            'king': 'https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'
+                        },
+                        'black': {
+                            'pawn': 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg',
+                            'knight': 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg',
+                            'bishop': 'https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg',
+                            'rook': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg',
+                            'queen': 'https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg',
+                            'king': 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'
+
+                        }
+                    };
+                } else {
+                    this.pictures = pictures;
+                }
+            }
+        }
+
+        class ChessPiece {
+            constructor(imageConstructor, locationSquare, color = null) {
+                this.imageConstructor = imageConstructor.pictures;
+                this.pieceName = this.constructor.name.toLowerCase();
+                if (this.pieceName !== 'ChessPiece') {
+                    this.pieceImage = this.imageConstructor[color][this.pieceName];
+                } else {
+                    console.log('is null', this.pieceName, this.imageConstructor, this.constructor.name);
+                    this.pieceImage = null;
+                }
+                this.locationSquare = locationSquare;
+                this.color = color;
+            }
+
+            describe() {
+                console.log(`\rfigure: ${this.pieceName},
+                \rimage: ${this.pieceImage},\n\ron deck square: ${this.locationSquare},\n\rof this color: ${this.color}`
+                );
+            }
+
+            // source = requried location
+            createPiece(source) {
+                if (source.children.length === 0) {
+                    let ob = document.createElement('img');
+                    ob.src = this.pieceImage;
+                    ob.alt = this.constructor.name;
+                    ob.dataset.cl = this.color;
+                    source.append(ob);
+                } else {
+                    console.log(`square y:${source.dataset.y} x:${source.dataset.x} ocupied, can't create`);
+                }
+            }
+
+            validateMove() {
+                console.log('Not implemented');
+            }
+
+            validateAttack() {
+                console.log('Not implemented');
+            }
+
+            move(from, to, deck) {
+                if (to.tagName === 'LI') {
+                    if (this.validateMove(from, to)) {
+                        this.locationSquare.x = +to.dataset.x;
+                        this.locationSquare.y = +to.dataset.y;
+                        this.createPiece(document.querySelector(
+                            `[data-x="${this.locationSquare.x}"]`
+                            + `[data-y="${this.locationSquare.y}"]`));
+                        from.removeChild(from.firstChild);
+                        return true;
+                    }
+
+                } else if (to.tagName === 'IMG') {
+                    if (this.validateAttack(from, to)) {
+                        this.locationSquare.x = to.parentNode.dataset.x;
+                        this.locationSquare.y = to.parentNode.dataset.y;
+
+                        for (const piece of (to.dataset.cl === 'white' ? deck.whitePieces : deck.blackPieces)) {
+                            if (+piece.locationSquare.x === +this.locationSquare.x
+                                && +piece.locationSquare.y === +this.locationSquare.y) {
+                                if (to.dataset.cl === 'white') {
+                                    deck.whitePieces = deck.whitePieces.filter(
+                                        function (e) { return e !== piece });
+                                } else {
+                                    deck.blackPieces = deck.blackPieces.filter(
+                                        function (e) { return e !== piece })
+                                }
+                            };
+                        }
+
+                        to.remove();
+                        from.removeChild(from.firstChild);
+                        this.createPiece(document.querySelector(
+                            `[data-x="${this.locationSquare.x}"]`
+                            + `[data-y="${this.locationSquare.y}"]`));
+                        return true;
+                    };
+                }
+                return false;
+            }
+        }
+
+        class Pawn extends ChessPiece {
+            constructor(pieceImage, locationSquare, color, isFirstMove = 1) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'Pawn';
+                this.isFirstMove = isFirstMove;
+            }
+
+            validateMove(from, to) {
+                if (this.color === 'white') {
+                    // на 1 или 2(если первый ход) по y
+                    // на 0 по х, потому что это ход, а не атака
+                    // выставляем isFirstMove в 0 для выбраного объекта
+                    if (to.dataset.y - this.locationSquare.y <= 1 + this.isFirstMove
+                        && to.dataset.y - this.locationSquare.y > 0
+                        && to.dataset.x - this.locationSquare.x === 0) {
+                        this.isFirstMove = 0;
+                        return true;
+                    } else {
+                        // false move case
+                        return false;
+                    }
+                } else {
+                    if (this.locationSquare.y - to.dataset.y <= 1 + this.isFirstMove
+                        && this.locationSquare.y - to.dataset.y > 0
+                        && this.locationSquare.x - to.dataset.x === 0) {
+                        this.isFirstMove = 0;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+
+            validateAttack(from, to) {
+                if (this.color === 'white') {
+                    if (to.parentNode.dataset.y - this.locationSquare.y === 1
+                        && Math.abs(to.parentNode.dataset.x - this.locationSquare.x) === 1
+                        && this.color !== to.dataset.cl) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (this.locationSquare.y - to.parentNode.dataset.y === 1
+                        && Math.abs(to.parentNode.dataset.x - this.locationSquare.x) === 1
+                        && this.color !== to.dataset.cl) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        class Knight extends ChessPiece {
+            constructor(pieceImage, locationSquare, color) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'Knight';
+                this.possibleMoves = [];
+            }
+
+            validateMove(from, to) {
+                if ((Math.abs(this.locationSquare.y - to.dataset.y) === 2
+                    && Math.abs(this.locationSquare.x - to.dataset.x) === 1)
+                    ||
+                    (Math.abs(this.locationSquare.y - to.dataset.y) === 1
+                        && Math.abs(this.locationSquare.x - to.dataset.x) === 2)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            validateAttack(from, to) {
+                if (this.validateMove(from, to.parentNode)
+                    && (this.color !== to.dataset.cl)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+
+        }
+
+        class Bishop extends ChessPiece {
+            constructor(pieceImage, locationSquare, color) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'Bishop';
+            }
+
+            // В валидации хода передается клетка
+            validateMove(from, to) {
+                if (Math.abs(from.dataset.x - to.dataset.x)
+                    === Math.abs(from.dataset.y - to.dataset.y)) {
+                    let x = +from.dataset.x;
+                    let y = +from.dataset.y;
+
+                    const coefX = from.dataset.x < to.dataset.x ? 1 : -1;
+                    const coefY = from.dataset.y < to.dataset.y ? 1 : -1;
+
+                    while (x + coefX !== +to.dataset.x) {
+                        x += coefX;
+                        y += coefY;
+                        if (document.querySelector(
+                            `[data-x="${x}"][data-y="${y}"]`).firstChild !== null) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            // Проводится валидация хода (нет фигур на пути), 
+            // потом проверяет цвет и конфирмит атаку
+            validateAttack(from, to) {
+                if (this.validateMove(from, to.parentNode)
+                    && (this.color !== to.dataset.cl)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        class Rook extends ChessPiece {
+            constructor(pieceImage, locationSquare, color) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'Rook';
+            }
+
+            // XOR'им значения перемещения, верно когда мув только по 1 оси
+            // подбираем коэф. перемещения
+            validateMove(from, to) {
+                let moveX = from.dataset.x - to.dataset.x;
+                let moveY = from.dataset.y - to.dataset.y;
+                if ((moveX ^ moveY) === moveX || (moveX ^ moveY) === moveY) {
+                    const coefX = moveX ? (moveX < 0 ? 1 : -1) : 0;
+                    const coefY = moveY ? (moveY < 0 ? 1 : -1) : 0;
+                    let x = +from.dataset.x;
+                    let y = +from.dataset.y;
+                    while (!(x + coefX === +to.dataset.x
+                        && y + coefY === +to.dataset.y)) {
+                        x += coefX;
+                        y += coefY;
+                        if (document.querySelector(
+                            `[data-x="${x}"][data-y="${y}"]`).firstChild !== null) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            validateAttack(from, to) {
+                if (this.validateMove(from, to.parentNode)
+                    && (this.color !== to.dataset.cl)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        class King extends ChessPiece {
+            constructor(pieceImage, locationSquare, color) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'King';
+            }
+        }
+
+        class Queen extends ChessPiece {
+            constructor(pieceImage, locationSquare, color) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'Queen';
+            }
+        }
+
+        class Deck {
+            constructor(parentObject = '.app') {
+                this.parentObject = parentObject;
+                this.selected = null;
+                this.selectedItem = null;
+                this.whitePieces = new Array();
+                this.blackPieces = new Array();
+                this.turn = 'white';
+            }
+
+            // rendering the deck
+            renderFull(parent = this.parentObject) {
+                console.log(`rendering deck in ${parent}`)
+
+                // Creating single line of chess/checkers deck build on ul
+                function deckLineBuilder(row) {
+                    const deckLine = document.createElement('ul');
+
+                    for (let col = 0; col < 9; col++) {
+                        const newLi = document.createElement('li');
+                        newLi.dataset.x = `${col}`;
+                        newLi.dataset.y = `${row}`;
+                        if (col == 0) {
+                            newLi.textContent = row;
+                            newLi.class = '';
+                        } else {
+                            if ((col % 2 - row % 2) == 0) {
+                                newLi.classList.add('white');
+                            } else {
+                                newLi.classList.add('black');
+                            }
+                        }
+                        deckLine.append(newLi);
+                    }
+                    return deckLine;
+                }
+
+                // Building a deck using create line
+                function createDeck() {
+                    const deckBoard = document.createElement('div');
+                    deckBoard.classList.add('deck__board');
+
+                    // letter line in top of the board A~H
+                    const letterLi = document.createElement('ul');
+                    letterLi.insertAdjacentHTML('beforeEnd',
+                        '<li></li>')
+                    for (let letterIdx = 65; letterIdx < 73; letterIdx++) {
+                        const newLi = document.createElement('li');
+                        newLi.textContent = String.fromCharCode(letterIdx);
+                        letterLi.append(newLi);
+                    }
+                    deckBoard.append(letterLi);
+
+                    // building deck board cycle
+                    for (let rw = 1; rw < 9; rw++) {
+                        deckBoard.append(
+                            deckLineBuilder(rw));
+                    }
+
+                    document.querySelector(parent).append(deckBoard);
+                }
+
+                function createdTurnInfo() {
+                    const turnBar = document.createElement('div');
+                    turnBar.classList.add('deck__turn');
+                    turnBar.insertAdjacentHTML('beforeEnd', '<span class="turn">White</span>');
+                    turnBar.insertAdjacentHTML('beforeEnd', '<span> figures turn</span>');
+
+                    document.querySelector(parent).prepend(turnBar);
+                }
+
+                createDeck();
+                createdTurnInfo();
+                console.log('Deck created');
+
+            }
+
+            // requires image source as json {white: {}, black: {}}
+            // self whitepieces and black pieces arrays
+            placePieces(
+                imageStorage,
+                whiteP = this.whitePieces,
+                blackP = this.blackPieces) {
+
+                // cycle to place pawns
+                // Takes image source as outer (placePieces) function param 
+                // creates obejct of Pawn class with coords x: 1-8, y: 2 or 7
+                // sets the color white and black
+                function placePawns() {
+                    for (let i = 1; i < 9; i++) {
+                        for (const clr of ['white', 'black']) {
+                            const pawn = new Pawn(
+                                imageStorage,
+                                { x: i, y: clr === 'white' ? 2 : 7 },
+                                clr);
+                            pawn.createPiece(document.querySelector(
+                                `[data-x="${pawn.locationSquare.x}"]`
+                                + `[data-y="${pawn.locationSquare.y}"]`)
+                            );
+                            // select array to place pawn
+                            clr === 'white' ? whiteP.push(pawn) : blackP.push(pawn);
+                        }
+                    }
+                }
+
+                const typesData = {
+                    'rook': { t: Rook, x: [1, 8] },
+                    'knight': { t: Knight, x: [2, 7] },
+                    'bishop': { t: Bishop, x: [3, 6] },
+                    'queen': { t: Queen, x: [4] },
+                    'king': { t: King, x: [5] }
+                };
+
+                function placeComplexFigure(type) {
+                    for (const xCoord of typesData[type].x) {
+                        for (const clr of ['white', 'black']) {
+                            const piece = new typesData[type].t(
+                                imageStorage,
+                                { x: xCoord, y: clr === 'white' ? 1 : 8 },
+                                clr);
+                            piece.createPiece(document.querySelector(
+                                `[data-x="${piece.locationSquare.x}"]`
+                                + `[data-y="${piece.locationSquare.y}"]`
+                            ));
+                            // Select white or black pieces pack based
+                            // on figure color
+                            clr === 'white' ? whiteP.push(piece) : blackP.push(piece);
+                        }
+                    }
+                }
+
+                for (const pieceType in typesData) {
+                    placeComplexFigure(pieceType);
+                }
+                placePawns();
+
+                console.log('Pieces init finished');
+            }
+
+            // switch the step
+            switchTurn() {
+                if (this.selected === null) {
+                    if (this.turn === 'white') {
+                        this.turn = 'black';
+                    } else {
+                        this.turn = 'white';
+                    }
+                }
+                document.querySelector('.turn')
+                    .textContent = `${this.turn.charAt(0).toUpperCase()}`
+                    + `${this.turn.slice(1)}`;
+            }
+
+            // click hander / backend
+            clickHandler(deck) {
+
+                function pickPiece(clickObject) {
+                    const eventCoords = {
+                        x: clickObject.parentNode.dataset.x,
+                        y: clickObject.parentNode.dataset.y
+                    };
+                    // assign selected object
+                    for (const item of (clickObject.dataset.cl == 'white')
+                        ? deck.whitePieces
+                        : deck.blackPieces) {
+                        if (`${item.locationSquare.x}` === eventCoords.x
+                            && `${item.locationSquare.y}` === eventCoords.y) {
+                            deck.selectedItem = item;
+                        }
+                    }
+                    clickObject.parentNode.classList.add('green');
+                    deck.selected = eventCoords;
+                }
+
+                // set selected to null, remove green mark
+                function unPickPiece(clickObject) {
+                    deck.selected = null;
+                    deck.selectedItem = null;
+                    clickObject.parentNode.classList.remove('green');
+                }
+
+                // move to target, start = current selected item position of selected 
+                function movePiece(clickTarget) {
+                    const start = document.querySelector(
+                        `[data-x="${deck.selected.x}"]`
+                        + `[data-y="${deck.selected.y}"]`);
+
+                    // VALIDATE MOVE returns true if move was performed (move return true)
+                    start.classList.remove('green');
+                    if (deck.selectedItem.move(start, clickTarget, deck)) {
+                        deck.selected = null;
+                        deck.selectedItem = null;
+                        return true;
+                    };
+                    return false;
+                }
+
+                function wrapper(ev) {
+                    // If not selected & color equal & target IMG - select
+                    if (!deck.selected
+                        && ev.target.dataset.cl === deck.turn
+                        && ev.target.tagName === 'IMG') {
+                        pickPiece(ev.target);
+
+                        // if selected || color !==  || target !== img move/unpick
+                    } else {
+                        // if selected
+                        if (deck.selected) {
+                            // 
+                            if (ev.target.parentNode.dataset.x === deck.selected.x
+                                && ev.target.parentNode.dataset.y === deck.selected.y) {
+                                unPickPiece(ev.target);
+                            } else {
+                                // try make move and if move made - change turn
+                                if (movePiece(ev.target)) {
+                                    deck.switchTurn();
+                                } else {
+                                    // make move error - unselect the selected
+                                    unPickPiece(document.querySelector(
+                                        `[data-x="${deck.selected.x}"]`
+                                        + `[data-y="${deck.selected.y}"]`));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return wrapper
+            }
+
+
+            createEvents() {
+                document.querySelector('.deck__board')
+                    .addEventListener(
+                        'click',
+                        this.clickHandler(this)
+                    );
+            }
+        }
+        function main() {
+            const chessDeck = new Deck();
+            chessDeck.renderFull();
+            const images = new ChessImageStorage();
+            chessDeck.placePieces(images);
+            chessDeck.createEvents();
+        }
+
+        main();
+
+    </script>
+
+</body>
+
+</html>

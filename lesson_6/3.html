@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+    integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+    crossorigin="anonymous" />
+  <style>
+    .fas {
+      margin: 0 auto;
+      padding: 0 auto;
+    }
+
+    i {
+      font-size: 50px;
+    }
+
+    .golden {
+      color: gold;
+    }
+  </style>
+</head>
+
+<body>
+  <!--
+Обязательное задание.
+
+Выполнить все задачи в теге script. Комментарии, в которых написаны задачи, не
+стирать, код с решением задачи пишем под комментарием.
+-->
+
+  <div class="stars_container">
+    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+      class="fas fa-star"></i>
+  </div>
+
+  <script>
+    "use strict";
+
+    /*
+    1. При наведении на любую из звезд, данной звезде должен ставиться класс
+    golden, также такой класс должен ставиться всем звездам до нее слева.
+    */
+
+    // Не знаю на сколько быстро JS обрабатывает рекурсию
+    const stars = document.querySelectorAll('.fa-star');
+    function setGold(startingObject) {
+      if (startingObject) {
+        startingObject.classList.add('golden');
+        setGold(startingObject.previousElementSibling);
+      }
+    }
+
+    stars.forEach((el) => {
+      el.addEventListener('mouseover', event => {
+        setGold(event.target);
+      })
+    });
+
+
+    /*
+    2. Когда мы уводим курсор мыши от звезды, все поставленные классы из первого
+    задания должны быть удалены.
+     */
+
+    document.querySelector('.stars_container')
+      .addEventListener('mouseout', event => {
+        for (const star of stars) {
+          star.classList.remove('golden');
+        }
+      });
+
+    /*
+    3. Когда мы переводим мышь от одной звезды к другой, у нас могут мигать
+    звезды (временно могут становиться черными). Почему так? Напишите словами.
+    Можем ли мы это исправить? Если да, то предложите решение.
+    */
+
+    // Можно попытаться убрать паддинги/марджины, но проблема не уйдёт
+    // если посмотреть в папке статик img ../static/img/gaps.JPG ->
+    // Видно, что есть пробелы, но в коде их нет
+    // Похоже, что это тот самый \n затесавшийся в тело HTML
+    // Методом тыка выяснилось, что если выстроить все эл-ты HTML в линию
+    // жизнь становится красивее
+
+  </script>
+</body>
+
+</html>
