@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+  <style>
+    .rectangle {
+      margin: 0 auto;
+      padding: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!--
+Необязательное задание.
+
+Необходимо реализовать функцию-конструктор Rectangle.
+-->
+  <div class="app">
+  </div>
+
+  <script>
+    "use strict";
+
+    /**
+     * Returns the rectangle object with width and height parameters and
+     * getArea() method.
+     *
+     * @param {number} width - Rectangle width
+     * @param {number} height - Rectangle height
+     * @return {Rectangle}
+     */
+
+    class Rectangle {
+      static objectsCreated = 0;
+
+      constructor(width, height, color = '#fba92c', parent = null) {
+        this.width = width;
+        this.height = height;
+        this.parent = parent ?? '.app';
+        this.color = color;
+        // явное лучше неявного) счетчик объектов, чтобы у каждого был свой стиль
+        Rectangle.objectsCreated += 1;
+        this.order = Rectangle.objectsCreated;
+      }
+
+      getSelfArea() {
+        return this.height * this.width;
+      }
+
+      buildSelf(location = 'beforeEnd') {
+        const self = document.createElement('div');
+        self.classList.add(`rectangle__${this.order}`);
+        document.querySelector(this.parent).append(self);
+      }
+
+      setStyles() {
+        const self = document.querySelector(`.rectangle__${this.order}`);
+        self.style.width = `${this.width}px`;
+        self.style.height = `${this.height}px`;
+        self.style.backgroundColor = `${this.color}`;
+      }
+    }
+
+    function main() {
+
+      const r = new Rectangle(10, 20);
+      console.assert(r.width === 10); // 10
+      console.assert(r.height === 20); // 20
+      console.assert(r.getSelfArea() === 200); // 200
+      r.buildSelf();
+      r.setStyles();
+    }
+
+    main();
+  </script>
+</body>
+
+</html>
