@@ -87,7 +87,6 @@
                             'rook': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg',
                             'queen': 'https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg',
                             'king': 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'
-
                         }
                     };
                 } else {
@@ -146,17 +145,23 @@
                             `[data-x="${this.locationSquare.x}"]`
                             + `[data-y="${this.locationSquare.y}"]`));
                         from.removeChild(from.firstChild);
+                        if (this.hasOwnProperty('isFirstMove')) {
+                            this.isFirstMove = 0;
+                        }
                         return true;
                     }
 
+                    // ЧИНИ РОКИРОВКУ, ДУРЬЯ БАШКА
                 } else if (to.tagName === 'IMG') {
-                    if (this.validateAttack(from, to)) {
-                        this.locationSquare.x = to.parentNode.dataset.x;
-                        this.locationSquare.y = to.parentNode.dataset.y;
+                    if (this.validateAttack(from, to, deck)) {
+
+                        this.locationSquare.x = +to.parentNode.dataset.x;
+                        this.locationSquare.y = +to.parentNode.dataset.y;
 
                         for (const piece of (to.dataset.cl === 'white' ? deck.whitePieces : deck.blackPieces)) {
                             if (+piece.locationSquare.x === +this.locationSquare.x
-                                && +piece.locationSquare.y === +this.locationSquare.y) {
+                                && +piece.locationSquare.y === +this.locationSquare.y
+                                && piece.color !== this.color) {
                                 if (to.dataset.cl === 'white') {
                                     deck.whitePieces = deck.whitePieces.filter(
                                         function (e) { return e !== piece });
@@ -167,12 +172,41 @@
                             };
                         }
 
-                        to.remove();
-                        from.removeChild(from.firstChild);
+                        if (this.pieceName !== 'King') {
+                            to.remove();
+                            from.removeChild(from.firstChild);
+                            console.log('removed passive figure');
+                            this.createPiece(document.querySelector(
+                                `[data-x="${this.locationSquare.x}"]`
+                                + `[data-y="${this.locationSquare.y}"]`));
+                            return true;
+                        }
+
+                        if (this.pieceName === 'King' && to.dataset.cl === this.color) {
+                            console.log('>>> king: ', this);
+                            const toX = +to.parentNode.dataset.x;
+                            const toY = +to.parentNode.dataset.y;
+                            console.log('>>> to coords', toX, toY);
+
+                            let shiftedRook = null;
+                            for (const piece of deck.whitePieces) {
+                                if (piece.locationSquare.x === toX
+                                    && piece.locationSquare.y === toY) {
+                                    shiftedRook = piece;
+                                }
+                            }
+
+                            console.log(shiftedRook);
+                            shiftedRook.createPiece(document.querySelector(
+                                `[data-x="${shiftedRook.locationSquare.x}"]`
+                                + `[data-y="${shiftedRook.locationSquare.y}"]`))
+                        }
                         this.createPiece(document.querySelector(
                             `[data-x="${this.locationSquare.x}"]`
                             + `[data-y="${this.locationSquare.y}"]`));
                         return true;
+
+
                     };
                 }
                 return false;
@@ -180,14 +214,14 @@
         }
 
         class Pawn extends ChessPiece {
-            constructor(pieceImage, locationSquare, color, isFirstMove = 1) {
+            constructor(pieceImage, locationSquare, color) {
                 super(
                     pieceImage,
                     locationSquare,
                     color
                 );
                 this.pieceName = 'Pawn';
-                this.isFirstMove = isFirstMove;
+                this.isFirstMove = 1;
             }
 
             validateMove(from, to) {
@@ -198,7 +232,6 @@
                     if (to.dataset.y - this.locationSquare.y <= 1 + this.isFirstMove
                         && to.dataset.y - this.locationSquare.y > 0
                         && to.dataset.x - this.locationSquare.x === 0) {
-                        this.isFirstMove = 0;
                         return true;
                     } else {
                         // false move case
@@ -208,7 +241,6 @@
                     if (this.locationSquare.y - to.dataset.y <= 1 + this.isFirstMove
                         && this.locationSquare.y - to.dataset.y > 0
                         && this.locationSquare.x - to.dataset.x === 0) {
-                        this.isFirstMove = 0;
                         return true;
                     } else {
                         return false;
@@ -245,7 +277,6 @@
                     color
                 );
                 this.pieceName = 'Knight';
-                this.possibleMoves = [];
             }
 
             validateMove(from, to) {
@@ -268,8 +299,6 @@
                     return false;
                 }
             }
-
-
         }
 
         class Bishop extends ChessPiece {
@@ -324,6 +353,7 @@
                     color
                 );
                 this.pieceName = 'Rook';
+                this.isFirstMove = 1;
             }
 
             // XOR'им значения перемещения, верно когда мув только по 1 оси
@@ -359,17 +389,6 @@
             }
         }
 
-        class King extends ChessPiece {
-            constructor(pieceImage, locationSquare, color) {
-                super(
-                    pieceImage,
-                    locationSquare,
-                    color
-                );
-                this.pieceName = 'King';
-            }
-        }
-
         class Queen extends ChessPiece {
             constructor(pieceImage, locationSquare, color) {
                 super(
@@ -378,6 +397,118 @@
                     color
                 );
                 this.pieceName = 'Queen';
+            }
+
+            validateMove(from, to) {
+                let moveX = from.dataset.x - to.dataset.x;
+                let moveY = from.dataset.y - to.dataset.y;
+                if (Math.abs(from.dataset.x - to.dataset.x)
+                    === Math.abs(from.dataset.y - to.dataset.y)) {
+                    const coefX = from.dataset.x < to.dataset.x ? 1 : -1;
+                    const coefY = from.dataset.y < to.dataset.y ? 1 : -1;
+                    let x = +from.dataset.x;
+                    let y = +from.dataset.y;
+                    while (x + coefX !== +to.dataset.x) {
+                        x += coefX;
+                        y += coefY;
+                        if (document.querySelector(
+                            `[data-x="${x}"][data-y="${y}"]`).firstChild !== null) {
+                            return false;
+                        }
+                    } return true;
+
+                } else if ((moveX ^ moveY) === moveX || (moveX ^ moveY) === moveY) {
+                    const coefX = moveX ? (moveX < 0 ? 1 : -1) : 0;
+                    const coefY = moveY ? (moveY < 0 ? 1 : -1) : 0;
+                    let x = +from.dataset.x;
+                    let y = +from.dataset.y;
+                    while (!(x + coefX === +to.dataset.x
+                        && y + coefY === +to.dataset.y)) {
+                        x += coefX;
+                        y += coefY;
+                        if (document.querySelector(
+                            `[data-x="${x}"][data-y="${y}"]`).firstChild !== null) {
+                            return false;
+                        }
+                    } return true;
+                }
+            }
+
+            validateAttack(from, to) {
+                if (this.validateMove(from, to.parentNode)
+                    && (this.color !== to.dataset.cl)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        }
+
+        class King extends ChessPiece {
+            constructor(pieceImage, locationSquare, color) {
+                super(
+                    pieceImage,
+                    locationSquare,
+                    color
+                );
+                this.pieceName = 'King';
+                this.isFirstMove = 1;
+            }
+
+            validateMove(from, to) {
+                let moveX = Math.abs(from.dataset.x - to.dataset.x);
+                let moveY = Math.abs(from.dataset.y - to.dataset.y);
+                if (moveX < 2 && moveY < 2) {
+                    return true;
+                } return false;
+            }
+
+            // from: li to: img 
+            validateCastling(from, to, deck) {
+                console.log('to', to);
+                const toX = +to.parentNode.dataset.x;
+                const toY = +to.parentNode.dataset.y;
+                // console.log(deck.whitePieces);
+                // console.log(toX, toY)
+                // console.log();
+                const targetEl = deck.whitePieces.find(
+                    el => el.locationSquare.x === toX
+                        && el.locationSquare.y === toY);
+
+                if (targetEl.isFirstMove && this.isFirstMove) {
+                    let x = +from.dataset.x;
+                    let y = +from.dataset.y;
+                    const xCoef = x < toX ? 1 : -1;
+                    x += xCoef;
+                    while (x !== toX) {
+                        // if any figures on line to Rook
+                        if (document.querySelector(`[data-x="${x}"][data-y="${y}"]`).firstChild !== null) {
+                            return false;
+                        };
+                        x += xCoef;
+                    }
+                    return true;
+                }
+            }
+
+            toCastle() {
+
+            }
+
+            // from LI to IMG
+            validateAttack(from, to, deck) {
+                const targetEl = deck.whitePieces.find(
+                    el => el.locationSquare.x === +to.parentNode.dataset.x
+                        && el.locationSquare.y === +to.parentNode.dataset.y);
+                if (from.firstChild.dataset.cl === to.dataset.cl
+                    && targetEl.pieceName === 'Rook') {
+                    if (this.validateCastling(from, to, deck)) {
+                        return true;
+                    };
+                } else if (validateMove(from, to)) {
+                    return true;
+                } return false;
             }
         }
 
@@ -607,7 +738,6 @@
                         }
                     }
                 }
-
                 return wrapper
             }
 
