@@ -262,7 +262,8 @@ class Cart {
                 this.delPosition(elId);
                 const elHtml = document.querySelector(`.cartItems > [data-id='${elId}']`);
                 elHtml.parentNode.removeChild(elHtml);
-            } else if (e.target.tagName === "DIV") {
+            } else if (e.target.tagName === "DIV"
+                && (e.target.classList.contains('likeOff') || (e.target.classList.contains('likeOn')))) {
                 if (e.target.classList.contains('likeOff')) {
                     e.target.classList.remove('likeOff');
                     e.target.classList.add('likeOn');
