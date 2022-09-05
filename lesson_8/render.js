@@ -226,6 +226,19 @@ class Cart {
         this.setItemsAmount();
     }
 
+    addItem(id) {
+        if (this.cartItems === null) {
+            this.cartItems = {};
+            this.cartItems[id] = 1;
+        } else if (Object.keys(this.cartItems).length === 0
+            || !Object.keys(this.cartItems).includes(id)) {
+            this.cartItems[id] = 1;
+        } else {
+            this.cartItems[id] += 1;
+        }
+        this.updateLocalStorage();
+    }
+
     // remove item from cart
     delPosition(id) {
         this.cartItems[id] = 0;
@@ -339,15 +352,7 @@ function main() {
     // Пересобираем корзину При добавлении
     document.querySelectorAll('.featuredImgDark > button').forEach(el => {
         el.addEventListener('click', (event) => {
-            if (cart.cartItems !== null && localStorage.cart !== '{}') {
-                if (getItemId(event.target) in cart.cartItems) {
-                    cart.cartItems[getItemId(event.target)] += 1;
-                } else {
-                    cart.cartItems[getItemId(event.target)] = 1;
-                }
-            } else {
-                cart.cartItems[getItemId(event.target)] = 1;
-            }
+            cart.addItem(getItemId(event.target));
             cart.rebuildSelf();
             cart.setCartEvents();
             cart.setTotalCost();
