@@ -6,7 +6,10 @@ body {
 }
 
 .header {
-    background: #222222;
+    display: flex;
+    flex-direction: row;
+    background: linear-gradient(#333, #222);
+    ;
     height: 74px;
     padding: 18px 16px;
     box-sizing: border-box;
@@ -14,8 +17,132 @@ body {
 
 .header .container {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.rightHeader {
+    position: relative;
+}
+
+.rightHeader>* {
+    padding: 0px 10px;
+    position: relative;
+}
+
+.centerHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.aaj0 {
+    min-width: 75px;
+    min-height: 50px;
+    background-color: #2e2d2d;
+    border: 1px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 5px;
+    box-sizing: border-box;
+}
+
+.search_form {
+    background: linear-gradient(#333, #222);
+    border-radius: 5px;
+    display: flex;
+    font-size: 0px;
+    padding: 15px;
+}
+
+.search_form input:focus {
+    animation: glow 1000ms ease-out infinite alternate;
+    background: linear-gradient(#333933, #222922);
+    box-shadow: 0 0 5px #d5833d, inset 0 0 5px rgba(255, 123, 0, 0.1), 0 2px 0 #000;
+    color: #efe;
+    outline: none;
+}
+
+.search_btn {
+    background: linear-gradient(#333, #222);
+    border: 1px solid rgb(207, 202, 202);
+    border-left-color: rgb(54, 53, 53);
+    border-radius: 0 5px 5px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    height: 42px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 80px;
+}
+
+.search_btn:hover {
+    animation: glow 1000ms ease-out infinite alternate;
+}
+
+.search_bar {
+    background: linear-gradient(#333, #222);
+    border: 1px solid rgb(207, 202, 202);
+    border-radius: 5px 0 0 5px;
+    color: rgb(235, 226, 226);
+    display: block;
+    float: left;
+    font-size: 13px;
+    font-weight: 400;
+    height: 40px;
+    margin: 0;
+    padding: 0 10px;
+    text-shadow: 0 -1px 0 #000;
+    width: 450px;
+}
+
+@keyframes glow {
+    0% {
+        border-color: rgb(197, 107, 34);
+        /* box-shadow: 0 0 5px rgba(255, 38, 0, 0.2), inset 0 0 5px rgba(243, 88, 16, 0.1), 0 2px 0 #000; */
+    }
+
+    100% {
+        border-color: rgb(255, 125, 102);
+        box-shadow: 0 0 20px rgb(255, 115, 0), inset 0 0 10px rgba(255, 115, 0, 0.4), 0 2px 0 #000;
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    .search_bar {
+        width: 150px;
+    }
+}
+
+.search_bar:focus {
+    border: 1px solid white;
+    background-color: white;
+    outline: 0;
+}
+
+.search_btn:hover {
+    background-color: #494848;
+}
+
+
+.leftHeader {
+    display: flex;
+    align-self: center;
+}
+
+.bars {
+    align-self: center;
+    padding-left: 20px;
 }
 
 @media (min-width: 1600px) {
@@ -29,6 +156,8 @@ body {
     .header {
         padding-left: 32px;
         padding-right: 32px;
+        display: flex;
+        justify-content: space-around;
     }
 }
 
@@ -36,8 +165,7 @@ body {
     color: #e8e8e8;
 }
 
-.userIcon,
-.cartIcon {
+.userIcon {
     display: none;
 }
 
@@ -50,24 +178,24 @@ body {
 }
 
 .userIcon {
-    margin-left: 25px;
-    margin-right: 42px;
+    margin-right: 0px;
 }
 
 .searchIcon {
-    margin-left: 41px;
+    padding: 0px 15px;
 }
 
 .cartIconWrap {
     position: relative;
+    cursor: pointer;
 }
 
-.cartIconWrap span {
+.cartItemsCount {
     display: inline-block;
     width: 19px;
     height: 19px;
     color: white;
-    background: #f16d7f;
+    background: #d5833d;
     border-radius: 50%;
     position: absolute;
     text-align: center;
@@ -75,6 +203,155 @@ body {
     top: -19px;
     font-size: 12px;
     line-height: 19px;
+}
+
+.cartWrapper {
+    z-index: 1;
+    width: 500px;
+    min-height: 150px;
+    max-height: 250px;
+    background: white;
+    position: absolute;
+    right: -20px;
+    top: 60px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    scrollbar-color: #d5833d;
+    scrollbar-width: thin;
+    border-radius: 10px;
+    box-shadow: 6px 4px 35px rgba(0, 0, 0, 0.21);
+}
+
+.cartWrapper>* {
+    font-family: Lato, sans-serif;
+}
+
+.cartTitle {
+    margin: 10px 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgb(116, 112, 112);
+}
+
+.cartTotal {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 5px 5px;
+    padding: 5px 0px;
+    padding-right: 65px;
+    border-top: 1px solid rgb(117, 115, 115);
+}
+
+.emptyCartFiller {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 15px;
+}
+
+
+.cartWrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.cartWrapper::-webkit-scrollbar-track {
+    background: #f8f3f4;
+    border-radius: 15px;
+}
+
+/* Handle */
+.cartWrapper::-webkit-scrollbar-thumb {
+    background: #d5833d;
+    border-radius: 15px;
+}
+
+/* Handle on hover */
+.cartWrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.deleteBtn,
+.likeBtn {
+    width: 15px;
+    height: 17px;
+}
+
+.likeOff {
+    background: url('./images/heart_button.svg') no-repeat center;
+}
+
+.likeOn {
+    background: url('./images/heart_button_clicked.svg') no-repeat center;
+}
+
+.deleteBtn:hover,
+.likeBtn :hover {
+    cursor: pointer;
+}
+
+.itemBtns {
+    display: flex;
+}
+
+.itemBtns>* {
+    margin: 0px 5px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    margin: 5px;
+}
+
+.item>* {
+    margin: 10px;
+}
+
+.itemImg>img {
+    height: 50px;
+}
+
+.itemName {
+    width: 75px;
+}
+
+.itemPrice {
+    width: 75px;
+}
+
+@media (max-width: 768px) {
+
+    .itemBtns>.likeBtn,
+    .itemPrice {
+        display: none;
+    }
+
+    .cartWrapper {
+        z-index: 1;
+        width: 325px;
+    }
+
+    .cartIconWrap {
+        width: 25px;
+        height: 25px;
+        display: flex;
+    }
+
+    .cartItemsCount {
+        right: 25px;
+        top: -15px;
+    }
+
+    .rightHeader {
+        display: flex;
+    }
+
+    .cartWrapper {
+        right: 0px;
+    }
 }
 
 .newArrivals {
@@ -87,7 +364,7 @@ body {
     font-weight: normal;
     font-size: 24px;
     line-height: 29px;
-    color: #f16d7f;
+    color: #d5833d;
 }
 
 @media (min-width: 768px) {
@@ -136,7 +413,7 @@ body {
     font-weight: bold;
     font-size: 14px;
     line-height: 17px;
-    color: #f16d7f;
+    color: #d5833d;
 }
 
 .filters {
@@ -175,6 +452,8 @@ body {
 
 .filtersRight {
     display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 12px;
     line-height: 14px;
     color: #6f6e6e;
@@ -212,7 +491,7 @@ body {
 }
 
 .filterLabelPink {
-    color: #ef5b70 !important;
+    color: #d5833d !important;
     left: 16px;
     top: 13px;
 }
@@ -228,7 +507,7 @@ body {
         font-weight: 600;
         font-size: 14px;
         line-height: 17px;
-        color: #000000;
+        color: #d5833d;
     }
 }
 
@@ -270,7 +549,7 @@ body {
 .filterCategoryHeader {
     font-size: 14px;
     line-height: 37px;
-    color: #ef5b70;
+    color: #d5833d;
     padding-left: 11px;
     min-height: 37px;
     border-bottom: 1px solid #ebebeb;
@@ -283,7 +562,7 @@ body {
     content: "";
     width: 5px;
     min-height: inherit;
-    background: #ef5b70;
+    background: #d5833d;
     position: absolute;
     left: 0;
     top: 1px;
@@ -366,6 +645,12 @@ body {
     margin-bottom: 64px;
 }
 
+.cat {
+    max-width: 50px;
+    max-height: 50px;
+    padding: 5px;
+}
+
 .featuredItems {
     display: grid;
     grid-template-columns: 1fr;
@@ -419,12 +704,17 @@ body {
 .featuredImgDark button {
     background: none;
     border: 1px solid white;
+    border-radius: 10px;
     color: white;
     display: flex;
     align-items: center;
     padding: 10px 14px;
     font-size: 14px;
     font-family: inherit;
+}
+
+.featuredImgDark button:hover {
+    cursor: pointer;
 }
 
 .featuredImgDark button img {
@@ -454,7 +744,7 @@ body {
 .featuredPrice {
     font-size: 16px;
     line-height: 19px;
-    color: #f16d7f;
+    color: #d5833d;
 }
 
 .pagination {
@@ -651,7 +941,7 @@ body {
     font-family: inherit;
     font-size: 14px;
     line-height: 17px;
-    background: #f16d7f;
+    background: #d5833d;
     border-top-right-radius: 28px;
     border-bottom-right-radius: 28px;
     padding: 0 17px;
